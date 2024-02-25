@@ -13,6 +13,9 @@ const connectionStates = {
 };
 
 function Chat() {
+  const [messageHistory, setMessageHistory] = useState<string[]>([]);
+
+  //loading of new messages in real-time using websocket
   const { lastMessage, sendMessage, readyState, getWebSocket } = useWebSocket(
     socketUrl,
     {
@@ -21,14 +24,24 @@ function Chat() {
     }
   );
 
-  // loading of initial messages should be done via REST endpoint calls (out of scope for POC)
-  const [messageHistory, setMessageHistory] = useState<string[]>([]);
-
   useEffect(() => {
     if (lastMessage !== null) {
       setMessageHistory((prev) => prev.concat(lastMessage.data));
     }
   }, [lastMessage, setMessageHistory]);
+
+  //initial loading of old messages whenever websocket is opened using REST
+  useEffect(() => {
+    if (readyState !== ReadyState.OPEN) {
+      return;
+    }
+
+    fetch("http://localhost:3000/messages")
+      .then((response) => response.json())
+      .then((data) => data.map((msg: { data: string }) => msg.data))
+      .then(setMessageHistory)
+      .catch(console.error);
+  }, [readyState, setMessageHistory]);
 
   const onSendClick = () => {
     const randomMessage = (Math.random() + 1).toString(36).substring(2);
