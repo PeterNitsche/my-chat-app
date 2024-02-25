@@ -13,10 +13,13 @@ const connectionStates = {
 };
 
 function Chat() {
-  const { lastMessage, sendMessage, readyState } = useWebSocket(socketUrl, {
-    onOpen: () => console.log("opened"),
-    shouldReconnect: () => true,
-  });
+  const { lastMessage, sendMessage, readyState, getWebSocket } = useWebSocket(
+    socketUrl,
+    {
+      onOpen: () => console.log("opened"),
+      shouldReconnect: () => true,
+    }
+  );
 
   // loading of initial messages should be done via REST endpoint calls (out of scope for POC)
   const [messageHistory, setMessageHistory] = useState<MessageEvent[]>([]);
@@ -32,10 +35,19 @@ function Chat() {
     sendMessage(randomMessage);
   };
 
+  const onCloseWebsocketClick = () => {
+    getWebSocket()?.close();
+  };
+
   return (
     <>
       <p>Connection status: {connectionStates[readyState]}</p>
-
+      <button
+        onClick={onCloseWebsocketClick}
+        disabled={readyState !== ReadyState.OPEN}
+      >
+        Close websocket
+      </button>
       <br />
       <button onClick={onSendClick} disabled={readyState !== ReadyState.OPEN}>
         Send random message
