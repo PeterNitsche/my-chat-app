@@ -1,11 +1,19 @@
 import "./App.css";
 
-import useWebSocket from "react-use-websocket";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 
 const socketUrl = "ws://localhost:8080";
 
+const connectionStates = {
+  [ReadyState.CONNECTING]: "Connecting",
+  [ReadyState.OPEN]: "Open",
+  [ReadyState.CLOSING]: "Closing",
+  [ReadyState.CLOSED]: "Closed",
+  [ReadyState.UNINSTANTIATED]: "Uninstantiated",
+};
+
 function App() {
-  const { sendMessage } = useWebSocket(socketUrl, {
+  const { sendMessage, readyState } = useWebSocket(socketUrl, {
     onOpen: () => console.log("opened"),
     shouldReconnect: () => true,
   });
@@ -18,6 +26,7 @@ function App() {
   return (
     <>
       <h1>Organizer</h1>
+      <p>Connection status: {connectionStates[readyState]}</p>
       <br />
       <button onClick={onSendClick}>Send random message</button>
     </>
