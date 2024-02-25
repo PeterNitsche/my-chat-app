@@ -22,11 +22,11 @@ function Chat() {
   );
 
   // loading of initial messages should be done via REST endpoint calls (out of scope for POC)
-  const [messageHistory, setMessageHistory] = useState<MessageEvent[]>([]);
+  const [messageHistory, setMessageHistory] = useState<string[]>([]);
 
   useEffect(() => {
     if (lastMessage !== null) {
-      setMessageHistory((prev) => prev.concat(lastMessage));
+      setMessageHistory((prev) => prev.concat(lastMessage.data));
     }
   }, [lastMessage, setMessageHistory]);
 
@@ -54,7 +54,7 @@ function Chat() {
       </button>
       <h2>Messages</h2>
       {messageHistory.map((message, idx) => {
-        return <p key={idx}>{message.data}</p>;
+        return <p key={idx}>{message}</p>;
       })}
       <br />
     </>
