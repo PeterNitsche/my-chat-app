@@ -7,6 +7,8 @@ The repo has been initialized using the vite template "react-ts".
 
 The POC has the goal to proof the architectural design of a chat component. UI design, responsiveness, etc. are not considered in this POC.
 
+The architecture is described in [this document](documentation/architecture.md).
+
 ## Start
 
 Run `yarn install` and `yarn start` locally.
